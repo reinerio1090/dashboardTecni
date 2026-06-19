@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateUser, getSessionCookieName } from "@/lib/auth";
 
+function shouldUseSecureCookie(request: NextRequest) {
+  if (process.env.COOKIE_SECURE === "true") {
+    return true;
+  }
+
+  if (process.env.COOKIE_SECURE === "false") {
+    return false;
+  }
+
+  const forwardedProto = request.headers.get("x-forwarded-proto");
+
+  return forwardedProto === "https" || request.nextUrl.protocol === "https:";
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json();
@@ -38,7 +52,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       path: "/",
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: shouldUseSecureCookie(request),
       maxAge: 60 * 60 * 24 * 7,
     });
 
