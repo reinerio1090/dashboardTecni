@@ -84,8 +84,6 @@ export async function authenticateUser(username: string, password: string) {
     return null;
   }
 
-    //console.log("Password hash de prueba para 'admin123':", await bcrypt.hash('admin123', 10));
-
   const validHash = await bcrypt.compare(password, user.password_hash);
   const valid = validHash || password === user.password_hash;
   if (!valid) {

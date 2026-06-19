@@ -20,14 +20,14 @@ async function setupTestUsers() {
     const connection = await pool.getConnection();
 
     // Verificar estructura de tabla
-    console.log("\n📋 Estructura de tabla dashboard_users:");
+    console.info("\n📋 Estructura de tabla dashboard_users:");
     const [columns]: any = await connection.query(
       `DESCRIBE dashboard_users`
     );
     console.table(columns);
 
     // Verificar usuarios existentes
-    console.log("\n👥 Usuarios existentes:");
+    console.info("\n👥 Usuarios existentes:");
     const [users]: any = await connection.query(
       `SELECT id, username, nombres, email, id_rol, estado FROM dashboard_users`
     );
@@ -58,7 +58,7 @@ async function setupTestUsers() {
       },
     ];
 
-    console.log("\n🔐 Creando usuarios de prueba...");
+    console.info("\n🔐 Creando usuarios de prueba...");
 
     for (const user of testUsers) {
       // Verificar si el usuario ya existe
@@ -68,7 +68,7 @@ async function setupTestUsers() {
       );
 
       if (existing.length > 0) {
-        console.log(`✓ Usuario "${user.username}" ya existe`);
+        console.info(`✓ Usuario "${user.username}" ya existe`);
         continue;
       }
 
@@ -83,12 +83,12 @@ async function setupTestUsers() {
         [user.username, user.nombres, user.email, user.id_rol, passwordHash]
       );
 
-      console.log(`✓ Usuario "${user.username}" creado exitosamente`);
-      console.log(`  - Contraseña: ${user.password}`);
-      console.log(`  - Rol: ${user.id_rol === 1 ? "Admin" : user.id_rol === 2 ? "Jefe" : "Usuario"}`);
+      console.info(`✓ Usuario "${user.username}" creado exitosamente`);
+      console.info(`  - Contraseña: ${user.password}`);
+      console.info(`  - Rol: ${user.id_rol === 1 ? "Admin" : user.id_rol === 2 ? "Jefe" : "Usuario"}`);
     }
 
-    console.log("\n✅ Setup completado");
+    console.info("\n✅ Setup completado");
 
     connection.release();
   } catch (error) {

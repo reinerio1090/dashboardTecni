@@ -15,6 +15,11 @@ function shouldUseSecureCookie(request: NextRequest) {
   return forwardedProto === "https" || request.nextUrl.protocol === "https:";
 }
 
+function getClientIp(request: NextRequest) {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") || "desconocida";
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json();
@@ -31,6 +36,12 @@ export async function POST(request: NextRequest) {
 
     const result = await authenticateUser(username, password);
     if (!result) {
+      console.warn("[auth] Inicio de sesion rechazado", {
+        username,
+        ip: getClientIp(request),
+        fecha: new Date().toISOString(),
+      });
+
       return NextResponse.json(
         {
           success: false,
@@ -54,6 +65,15 @@ export async function POST(request: NextRequest) {
       sameSite: "lax",
       secure: shouldUseSecureCookie(request),
       maxAge: 60 * 60 * 24 * 7,
+    });
+
+    console.info("[auth] Usuario conectado", {
+      id: result.payload.id,
+      username: result.payload.username,
+      nombre: result.payload.nombre,
+      rol: result.payload.rol,
+      ip: getClientIp(request),
+      fecha: new Date().toISOString(),
     });
 
     return response;

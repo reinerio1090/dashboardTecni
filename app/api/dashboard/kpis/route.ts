@@ -577,23 +577,6 @@ export async function GET(request: NextRequest) {
       bodegasVentasUsuarioLog = bodegasTodasRutas;
     }
 
-    console.log("[dashboard/kpis] Consulta ventas por usuario:", {
-      sql: ventasUsuariosSql,
-      params: paramsVentasUsuarios,
-      sqlConParametros: buildDebugSql(ventasUsuariosSql, paramsVentasUsuarios),
-      filtros: {
-        modoVentasUsuario,
-        tieneAccesoRutas,
-        sucursalIds,
-        sucursalesPermitidas,
-        listaSucursales,
-        listaRutas,
-        rutasExternasSeleccionadas,
-        bodegasInternasSeleccionadas,
-        sucursalesDeRutasSeleccionadas,
-        bodegasVentasUsuario: bodegasVentasUsuarioLog,
-      },
-    });
     debugInfo.ventasPorUsuario = {
       sql: ventasUsuariosSql,
       params: paramsVentasUsuarios,
@@ -715,10 +698,6 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    console.log(
-      "[dashboard/kpis] Registros ventas por usuario:",
-      ventasUsuariosRows.length
-    );
 
     // ===========================
     // CARTERA VENCIDA
@@ -761,14 +740,6 @@ export async function GET(request: NextRequest) {
         .filter(Boolean);
     }
 
-    console.log("[dashboard/kpis] Rutas usadas para cuentas por cobrar:", {
-      sql: rutasCarteraSql,
-      params: paramsRutasCartera,
-      sqlConParametros: rutasCarteraSql
-        ? buildDebugSql(rutasCarteraSql, paramsRutasCartera)
-        : "",
-      rutasCartera,
-    });
 
     const whereCartera =
       rutasCartera.length > 0
@@ -843,27 +814,7 @@ export async function GET(request: NextRequest) {
       cuentasPorCobrarRows = cuentasResult;
     }
 
-    console.log("[dashboard/kpis] Consulta cartera vencida:", {
-      sql: carteraSql,
-      params: paramsCartera,
-      sqlConParametros: carteraSql
-        ? buildDebugSql(carteraSql, paramsCartera)
-        : "",
-    });
 
-    console.log("[dashboard/kpis] Consulta cuentas por cobrar:", {
-      sql: cuentasPorCobrarSql,
-      params: paramsCartera,
-      sqlConParametros: buildDebugSql(cuentasPorCobrarSql, paramsCartera),
-      filtros: {
-        sucursalIds,
-        listaSucursales,
-        listaRutas,
-        rutasExternasSeleccionadas,
-        bodegasInternasSeleccionadas,
-        rutasCartera,
-      },
-    });
     debugInfo.cuentasPorCobrar = {
       rutas: {
         sql: rutasCarteraSql,
@@ -897,10 +848,6 @@ export async function GET(request: NextRequest) {
       },
     };
 
-    console.log(
-      "[dashboard/kpis] Registros cuentas por cobrar:",
-      cuentasPorCobrarRows.length
-    );
 
     const ventaTotalUsuarios = ventasUsuariosRows.reduce(
       (total, venta: { ventaTotal: number | string | null }) =>

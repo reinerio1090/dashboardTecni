@@ -19,8 +19,6 @@ export async function GET(request: NextRequest) {
     const sucursales = searchParams.get("sucursales");
     const rutas = searchParams.get("rutas");
 
-    console.log("Parámetros recibidos:", { fechaInicio, fechaFin, sucursales, rutas });
-
     if (!fechaInicio || !fechaFin) {
       return NextResponse.json(
         {
@@ -35,7 +33,6 @@ export async function GET(request: NextRequest) {
     const [test]: any = await pool.query(
       `SELECT COUNT(*) as count FROM facturas`
     );
-    console.log("Test query result:", test);
 
     return NextResponse.json({
       success: true,
